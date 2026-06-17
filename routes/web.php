@@ -6,7 +6,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::view('/', 'layouts.app');
+Route::view('/', 'accueil.index');
+Route::view('/ajoutT','agence.terrains.AjouterTerrain');
 
 require __DIR__.'/logements.php';
 require __DIR__.'/terrains.php';
