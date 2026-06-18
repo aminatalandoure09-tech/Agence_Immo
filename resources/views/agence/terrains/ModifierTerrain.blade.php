@@ -1,4 +1,4 @@
-@extends('layouts.App')
+@extends('layouts.app')
 
 @section('content')
 
@@ -9,7 +9,7 @@
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h3 class="mb-0">Modifier Terrain</h3>
 
-            <a href="{{ route('terrains.index') }}"
+            <a href="#"
                class="text-white text-decoration-none fs-3">
                 &times;
             </a>
@@ -17,7 +17,7 @@
 
         <div class="card-body p-5">
 
-            <form action="{{ route('terrains.update',$terrain->id) }}"
+            <form action="#"
                   method="POST"
                   enctype="multipart/form-data">
 
@@ -33,7 +33,7 @@
                     <div class="col-md-9">
                         <input type="text"
                                name="nom"
-                               value="{{ $terrain->nom }}"
+                               value="#"
                                class="form-control">
                     </div>
 
@@ -48,7 +48,7 @@
                     <div class="col-md-9">
                         <input type="text"
                                name="superficie"
-                               value="{{ $terrain->superficie }}"
+                               value="#"
                                class="form-control">
                     </div>
 
@@ -77,7 +77,7 @@
                     <div class="col-md-9">
                         <input type="number"
                                name="prix"
-                               value="{{ $terrain->prix }}"
+                               value="#"
                                class="form-control">
                     </div>
 
@@ -85,7 +85,7 @@
 
                 <div class="text-end mt-5">
 
-                    <a href="{{ route('terrains.index') }}"
+                    <a href="#"
                        class="btn btn-secondary">
                         Annuler
                     </a>

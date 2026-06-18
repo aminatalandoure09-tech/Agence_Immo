@@ -6,5 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Terrain extends Model
 {
-    //
+    protected $table = 'terrains';
+
+    protected $fillable = [
+        'nom',
+        'superficie',
+        'image',
+        'prix'
+    ];
 }

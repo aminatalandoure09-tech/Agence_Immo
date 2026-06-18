@@ -1,4 +1,4 @@
-@extends('layouts.App')
+@extends('layouts.app')
 
 @section('content')
 
@@ -8,14 +8,14 @@
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h3 class="mb-0">Ajouter Terrain</h3>
 
-            <a href="{{ route('terrains.index') }}" class="text-white text-decoration-none fs-3">
+            <a href="#" class="text-white text-decoration-none fs-3">
                 &times;
             </a>
         </div>
 
         <div class="card-body p-5">
 
-            <form action="{{ route('terrains.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="#" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-4">
@@ -47,7 +47,7 @@
 
                 <div class="text-end mt-5">
 
-                    <a href="{{ route('terrains.index') }}"
+                    <a href="#"
                        class="btn btn-secondary">
                         Annuler
                     </a>

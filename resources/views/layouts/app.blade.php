@@ -8,12 +8,32 @@
     margin:0;
     background:#e5e7eb;
 }
+.navbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    z-index: 1000;
+}
 
 .sidebar{
-    width:250px;
-    min-height:100vh;
-    background:#06112d;
-    padding-top:20px;
+    position: fixed;
+    top: 56px; /* hauteur navbar */
+    left: 0;
+
+    width: 250px;
+    height: calc(100vh - 56px);
+
+    background-color: #07142e;
+
+    overflow-y: auto;
+}
+
+.content{
+    margin-top: 70px;
+    margin-left: 250px;
+    padding: 20px;
 }
 
 .sidebar .nav-link{
@@ -22,9 +42,11 @@
 }
 
 .sidebar .nav-link:hover{
-    background:#0d6efd;
+    background:#1976D2;
 }
-
+.navbar {
+    backdrop-filter: blur(8px);
+}
 .content{
     flex:1;
 }
