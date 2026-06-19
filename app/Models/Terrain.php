@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Terrain extends Model
 {
     protected $table = 'terrains';
-
+    public $timestamps = false;
     protected $fillable = [
-        'nom',
+        'nom_terrain',
         'superficie',
-        'image',
-        'prix'
+        'image_url',
+        'prix_fcfa'
     ];
 }

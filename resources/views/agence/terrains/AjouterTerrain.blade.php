@@ -15,34 +15,34 @@
 
         <div class="card-body p-5">
 
-            <form action="#" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('terrains.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-4">
                     <input type="text"
-                           name="nom"
+                           name="nom_terrain"
                            class="form-control"
-                           placeholder="Nom du terrain (+ quartier)">
+                           placeholder="Nom du terrain (+ quartier)" required>
                 </div>
 
                 <div class="mb-4">
                     <input type="number"
                            name="superficie"
                            class="form-control"
-                           placeholder="Superficie">
+                           placeholder="Superficie" required>
                 </div>
 
                 <div class="mb-4">
                     <input type="file"
-                           name="image"
-                           class="form-control">
+                           name="image_url"
+                           class="form-control" required>
                 </div>
 
                 <div class="mb-4">
                     <input type="number"
-                           name="prix"
+                           name="prix_fcfa"
                            class="form-control"
-                           placeholder="Prix en FCFA">
+                           placeholder="Prix en FCFA" required>
                 </div>
 
                 <div class="text-end mt-5">
