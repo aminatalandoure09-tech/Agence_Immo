@@ -1,46 +1,52 @@
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
+
+    <div class="text-end p-2">
+        <button class="btn btn-outline-light btn-sm" id="toggleBtn">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
 
     <ul class="nav flex-column">
 
         <li class="nav-item">
             <a href="/" class="nav-link text-white">
                 <i class="bi bi-house-fill"></i>
-                Accueil
+                <span class="text">Accueil</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a href="/logements" class="nav-link text-white">
                 <i class="bi bi-building"></i>
-                Logement
+                <span class="text">Logement</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a href="/terrains" class="nav-link text-white">
                 <i class="bi bi-map"></i>
-                Terrain
+                <span class="text">Terrain</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a href="/demandes" class="nav-link text-white">
                 <i class="bi bi-card-checklist"></i>
-                Demandes
+                <span class="text">Demandes</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a href="/admin" class="nav-link text-white">
                 <i class="bi bi-shield-lock"></i>
-                Admin
+                <span class="text">Admin</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a href="/infos" class="nav-link text-white">
                 <i class="bi bi-info-circle"></i>
-                Infos
+                <span class="text">Infos</span>
             </a>
         </li>
 
