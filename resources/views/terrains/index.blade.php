@@ -84,7 +84,7 @@ body{
             <p>superficie: 800 m²</p>
         </div>
 
-        <a href="#" class="btn">Prendre rendez-vous</a>
+        <a href="/rendezvous" class="btn">Prendre rendez-vous</a>
     </div>
 
     <div class="card">
@@ -95,7 +95,7 @@ body{
             <p>superficie: 920 m²</p>
         </div>
 
-        <a href="#" class="btn">Prendre rendez-vous</a>
+        <a href="/rendezvous" class="btn">Prendre rendez-vous</a>
     </div>
 
 </div>
