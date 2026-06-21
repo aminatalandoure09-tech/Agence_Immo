@@ -4,88 +4,59 @@ namespace App\Http\Controllers;
 
 use App\Models\Logement;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class LogementController extends Controller
 {
-    public function index()
-    {
-        $logements = Logement::all();
-        return view('logements.index', compact('logements'));
-    }
-
+    /**
+     * Afficher le formulaire d'ajout de logement
+     */
     public function create()
     {
-        return view('logements.create');
+        return view('logements.create'); // Adapte le nom selon ton fichier Blade
     }
 
+    /**
+     * Enregistrer un nouveau logement dans la base de données
+     */
     public function store(Request $request)
     {
+        // 1. Validation stricte des données du formulaire
         $request->validate([
-            'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'superficie' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'prix' => 'required|numeric',
-            'nb_pieces' => 'required|integer',
-            'nb_chambres' => 'required|integer',
-            'nb_salles_bain' => 'required|integer',
-            'type_logement' => 'required|string',
-            'meuble' => 'required|string',
+            'nom_logement'          => 'required|string|max:255',
+            'description_logement'  => 'nullable|string',
+            'superficie'            => 'required|integer|min:1',
+            'prix_fcfa'             => 'required|numeric|min:0',
+            'nombre_pieces'         => 'required|integer|min:1',
+            'nombre_chambres'       => 'required|integer|min:0',
+            'nombre_salles_de_bain' => 'required|integer|min:0',
+            'type_logement'         => 'required|string|max:100',
+            'meuble'                => 'required|in:Oui,Non',
+            'image'                 => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Optionnel : pour l'upload d'image
         ]);
 
-        $data = $request->all();
-
+        // 2. Gestion du fichier image (si envoyé)
+        $imagePath = null;
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('logements', 'public');
+            // Stocke l'image dans le dossier storage/app/public/logements
+            $imagePath = $request->file('image')->store('logements', 'public');
         }
 
-        Logement::create($data);
-
-        return redirect()->route('dashboard')->with('success', 'Logement ajouté avec succès.');
-    }
-
-    public function edit(Logement $logement)
-    {
-        return view('logements.edit', compact('logement'));
-    }
-
-    public function update(Request $request, Logement $logement)
-    {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'superficie' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'prix' => 'required|numeric',
-            'nb_pieces' => 'required|integer',
-            'nb_chambres' => 'required|integer',
-            'nb_salles_bain' => 'required|integer',
-            'type_logement' => 'required|string',
-            'meuble' => 'required|string',
+        // 3. Insertion dans la base de données via le modèle
+        Logement::create([
+            'nom_logement'          => $request->input('nom_logement'),
+            'description_logement'  => $request->input('description_logement'),
+            'superficie'            => $request->input('superficie'),
+            'prix_fcfa'             => $request->input('prix_fcfa'),
+            'nombre_pieces'         => $request->input('nombre_pieces'),
+            'nombre_chambres'       => $request->input('nombre_chambres'),
+            'nombre_salles_de_bain' => $request->input('nombre_salles_de_bain'),
+            'type_logement'         => $request->input('type_logement'),
+            'meuble'                => $request->input('meuble'),
+            'image_url'             => $imagePath,
+            'statut'                => 'disponible', // Par défaut à la création
         ]);
 
-        $data = $request->all();
-
-        if ($request->hasFile('image')) {
-            if ($logement->image) {
-                Storage::disk('public')->delete($logement->image);
-            }
-            $data['image'] = $request->file('image')->store('logements', 'public');
-        }
-
-        $logement->update($data);
-
-        return redirect()->route('dashboard')->with('success', 'Logement modifié avec succès.');
-    }
-
-    public function destroy(Logement $logement)
-    {
-        if ($logement->image) {
-            Storage::disk('public')->delete($logement->image);
-        }
-        $logement->delete();
-
-        return redirect()->route('dashboard')->with('success', 'Logement supprimé avec succès.');
+        // 4. Retour sur la page du formulaire avec le message de succès
+        return redirect()->back()->with('success', 'Logement ajouté avec succès.');
     }
 }

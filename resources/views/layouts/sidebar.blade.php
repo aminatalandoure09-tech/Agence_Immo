@@ -51,5 +51,13 @@
         </li>
 
     </ul>
+    <a href="{{ route('deconnexion') }}" 
+   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Se déconnecter
+</a>
+
+<form id="logout-form" action="{{ route('deconnexion') }}" method="POST" style="display: none;">
+    @csrf
+</form>
 
 </div>

@@ -88,6 +88,7 @@
     <div class="main-wrapper">
 
         @include('layouts.sidebar')
+        
 
         <main class="content">
             @yield('content')
