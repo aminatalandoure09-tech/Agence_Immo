@@ -1,105 +1,102 @@
 @extends('layouts.app')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liste des Terrains</title>
-
 <style>
-body{
-    background:#e5e5e5;
-    font-family: Arial, sans-serif;
-}
+    body {
+        background: #e5e5e5;
+        font-family: Arial, sans-serif;
+    }
 
-.container{
-    display:flex;
-    justify-content:center;
-    gap:40px;
-    margin-top:50px;
-    flex-wrap:wrap;
-}
+    .container-terrains {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 50px;
+        flex-wrap: wrap;
+        padding-bottom: 50px;
+    }
 
-.card{
-    width:350px;
-    background:#081133;
-    padding:20px;
-    border-radius:8px;
-}
+    .card-terrain {
+        width: 350px;
+        background: #081133;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
 
-.card img{
-    width:100%;
-    height:250px;
-    object-fit:cover;
-}
+    .card-terrain img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
 
-.card-content{
-    color:white;
-    margin-top:15px;
-}
+    .card-content-terrain {
+        color: white;
+        margin-top: 15px;
+    }
 
-.card-content h3{
-    margin:0;
-    font-size:20px;
-    font-weight:normal;
-}
+    .card-content-terrain h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: normal;
+        height: 56px; /* Évite les décalages si le titre fait 2 lignes */
+        overflow: hidden;
+    }
 
-.card-content p{
-    margin:5px 0;
-    font-size:18px;
-}
+    .card-content-terrain p {
+        margin: 5px 0;
+        font-size: 18px;
+    }
 
-.btn{
-    display:block;
-    width:80%;
-    margin:25px auto 10px;
-    text-align:center;
-    background:#2ecc71;
-    color:white;
-    text-decoration:none;
-    padding:15px;
-    border-radius:5px;
-    font-size:18px;
-    font-weight:bold;
-}
+    .btn-terrain {
+        display: block;
+        width: 80%;
+        margin: 25px auto 10px;
+        text-align: center;
+        background: #2ecc71;
+        color: white;
+        text-decoration: none;
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        transition: background 0.2s ease;
+    }
 
-.btn:hover{
-    background:#27ae60;
-}
+    .btn-terrain:hover {
+        background: #27ae60;
+    }
 </style>
-</head>
 
-<body>
+<div class="container-terrains">
 
-<div class="container">
+    @forelse($listeTerrains as $terrain)
+        <div class="card-terrain">
+            @if($terrain->image_url)
+                <img src="{{ asset('images/' . $terrain->image_url) }}" alt="{{ $terrain->nom_terrain }}">
+            @else
+                <div class="d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 250px; border-radius: 4px;">
+                    📷 Aucune photo disponible
+                </div>
+            @endif
 
-    <div class="card">
-        <img src="/images/terrain2.jpg" alt="Terrain Acceuil">
+            <div class="card-content-terrain">
+                <h3>{{ $terrain->nom_terrain }}</h3>
+                <p>Prix : {{ number_format($terrain->prix_fcfa, 0, ',', ' ') }} FCFA</p>
+                <p>Superficie : {{ $terrain->superficie }} m²</p>
+            </div>
 
-        <div class="card-content">
-            <h3>Terrain situé Sotuba Village</h3>
-            <p>prix: 7 000 000 fcfa</p>
-            <p>superficie: 800 m²</p>
+            <a href="{{ route('rendezvous.create', ['terrain_id' => $terrain->id_terrain ?? $terrain->id]) }}" class="btn-terrain">
+                Prendre rendez-vous
+            </a>
         </div>
-
-        <a href="/rendezvous" class="btn">Prendre rendez-vous</a>
-    </div>
-
-    <div class="card">
-        <img src="/images/terrain.jpg" alt="Terrain Niamana">
-        <div class="card-content">
-            <h3>Terrain situé Niamana</h3>
-            <p>prix: 5 000 000 fcfa</p>
-            <p>superficie: 920 m²</p>
+    @empty
+        <div class="text-center py-5 w-100">
+            <h3 class="text-muted">Aucun terrain n'est disponible pour le moment. 🏢</h3>
+            <a href="{{ route('dashboard') }}" class="btn btn-dark mt-3 px-4">Retour au Dashboard</a>
         </div>
-
-        <a href="/rendezvous" class="btn">Prendre rendez-vous</a>
-    </div>
+    @endforelse
 
 </div>
-
-</body>
-</html>
-@endsection,
+@endsection

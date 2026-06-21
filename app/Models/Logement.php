@@ -10,6 +10,7 @@ class Logement extends Model
 
     // Désactive la gestion automatique de created_at et updated_at
     public $timestamps = false;
+    protected $primaryKey = 'id_logement';
 
     protected $fillable = [
         'nom_logement',

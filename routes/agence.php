@@ -1,13 +1,9 @@
 <?php
 
-use App\Http\Controllers\TerrainController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::get('/terrains/ajouter', function () {
-    return view('agence.terrains.AjouterTerrain');
-});
-
-Route::get('/agence/modifier', function () {
-    return view('agence.terrains.ModifierTerrain');
-});
+// Affichage du Dashboard (accessible uniquement si connecté)
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard')
+    ->middleware('auth');

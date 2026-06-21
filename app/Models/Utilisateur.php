@@ -21,6 +21,7 @@ class Utilisateur extends Authenticatable
         'nom',
         'prenom',
         'email',
+        'role',
         'telephone',
         'mot_de_passe',
     ];

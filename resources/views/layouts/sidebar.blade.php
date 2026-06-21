@@ -1,4 +1,4 @@
-<div class="sidebar" id="sidebar">
+<div class="sidebar fixed-left" id="sidebar">
 
     <div class="text-end p-2">
         <button class="btn btn-outline-light btn-sm" id="toggleBtn">
@@ -16,14 +16,14 @@
         </li>
 
         <li class="nav-item">
-            <a href="/logements" class="nav-link text-white">
+            <a href="{{ Route('logements.index') }}" class="nav-link text-white">
                 <i class="bi bi-building"></i>
                 <span class="text">Logement</span>
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/terrains" class="nav-link text-white">
+            <a href="{{ Route('terrains.index') }}" class="nav-link text-white">
                 <i class="bi bi-map"></i>
                 <span class="text">Terrain</span>
             </a>
@@ -37,7 +37,7 @@
         </li>
 
         <li class="nav-item">
-            <a href="/admin" class="nav-link text-white">
+            <a href="{{ Route('dashboard') }}" class="nav-link text-white">
                 <i class="bi bi-shield-lock"></i>
                 <span class="text">Admin</span>
             </a>
@@ -51,13 +51,11 @@
         </li>
 
     </ul>
-    <a href="{{ route('deconnexion') }}" 
-   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Se déconnecter
-</a>
-
-<form id="logout-form" action="{{ route('deconnexion') }}" method="POST" style="display: none;">
+   <form action="{{ route('deconnexion') }}" method="POST" class="d-inline">
     @csrf
+    <button type="submit" class="btn btn-link nav-link text-white d-inline p-0" style="vertical-align: baseline;">
+        Déconnexion
+    </button>
 </form>
 
 </div>

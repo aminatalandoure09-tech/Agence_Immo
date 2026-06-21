@@ -34,7 +34,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Rediriger vers la page d'accueil (ou tableau de bord)
-            return redirect()->intended('/');
+            return redirect()->route('home');
         }
 
         // Retourner une erreur si les identifiants sont incorrects
@@ -73,8 +73,7 @@ class AuthController extends Controller
         // Connecter l'utilisateur immédiatement après l'inscription
         Auth::login($utilisateur);
 
-        return redirect('/')->with('success', 'Votre compte a été créé avec succès !');
-    }
+        return redirect()->route('home')->with('success', 'Votre compte a été créé avec succès !');    }
 
     // Déconnexion
     public function deconnexion(Request $request)

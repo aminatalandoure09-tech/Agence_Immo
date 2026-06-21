@@ -8,6 +8,7 @@ class Terrain extends Model
 {
     protected $table = 'terrains';
     public $timestamps = false;
+    protected $primaryKey = 'id_terrain';
     protected $fillable = [
         'nom_terrain',
         'superficie',
