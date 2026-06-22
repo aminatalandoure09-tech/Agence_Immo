@@ -12,11 +12,7 @@
     </span>
 </a>
 
-        <div class="ms-auto">
-            <span class="text-white">
-                Bienvenue Admin
-            </span>
-        </div>
+        
 
     </div>
 </nav>

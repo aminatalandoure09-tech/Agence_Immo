@@ -63,9 +63,17 @@
                     ⬅ Retour au catalogue
                 </a>
                 
-                <a href="{{ route('rendezvous.create', ['logement_id' => $logement->id_logement]) }}" class="btn btn-primary px-4 font-weight-bold" style="background-color: #0d6efd !important; border: none;">
-                    🗓️ Prendre rendez-vous
-                </a>
+                 @auth
+        <a href="{{ route('rendezvous.create', ['terrain_id' => $terrain->id_terrain]) }}" class="btn btn-success font-weight-bold px-4 py-2 w-100 rounded shadow-sm" style="background-color: #22c55e !important; border: none; font-size: 1rem;">
+            Prendre rendez-vous
+        </a>
+    @endauth
+
+    @guest
+        <a href="{{ route('login') }}" class="btn btn-warning font-weight-bold px-4 py-2 w-100 rounded shadow-sm" style="font-size: 1rem;">
+            🔑 Se connecter pour réserver
+        </a>
+    @endguest
             </div>
 
         </div>
