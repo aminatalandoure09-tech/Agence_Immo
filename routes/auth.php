@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 // Routes invités (accessibles uniquement si non connecté)
 Route::middleware('guest')->group(function () {
-    Route::get('/connexion', [AuthController::class, 'showConnexion'])->name('connexion');
+    // CORRECTION ICI : On utilise ->name('login') pour plaire à Laravel
+    Route::get('/connexion', [AuthController::class, 'showConnexion'])->name('login');
+    
     Route::post('/connexion', [AuthController::class, 'connexion'])->name('connexion.submit');
     
     Route::get('/inscription', [AuthController::class, 'showInscription'])->name('inscription');

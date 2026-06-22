@@ -7,3 +7,5 @@ use Illuminate\Support\Facades\Route;
 Route::delete('/clients/{id_utilisateur}', [DashboardController::class, 'destroyClient'])
     ->name('clients.destroy')
     ->middleware('auth');
+
+    

@@ -30,7 +30,7 @@
         </li>
 
         <li class="nav-item">
-            <a href="/demandes" class="nav-link text-white">
+            <a href="{{ route('rendezvous.index') }}" class="nav-link text-white">
                 <i class="bi bi-card-checklist"></i>
                 <span class="text">Demandes</span>
             </a>
@@ -44,18 +44,32 @@
         </li>
 
         <li class="nav-item">
-            <a href="/infos" class="nav-link text-white">
+            <a href="{{ Route('infos') }}" class="nav-link text-white">
                 <i class="bi bi-info-circle"></i>
                 <span class="text">Infos</span>
             </a>
         </li>
 
+        <!-- Section Dynamique : Connexion / Déconnexion -->
+        <li class="nav-item">
+            @auth
+                <form action="{{ route('deconnexion') }}" method="POST" class="m-0 p-0">
+                    @csrf
+                    <button type="submit" class="nav-link text-start btn w-100 border-0 text-white bg-transparent p-0 d-flex align-items-center" style="font-size: 1rem;">
+                        <i class="bi bi-box-arrow-right text-danger"></i>
+                        <span class="text ms-2">Déconnexion</span>
+                    </button>
+                </form>
+            @endauth
+
+            @guest
+                <a href="{{ route('login') }}" class="nav-link text-white d-flex align-items-center">
+                    <i class="bi bi-box-arrow-in-right text-success"></i>
+                    <span class="text ms-2">Connexion</span>
+                </a>
+            @endguest
+        </li>
+        
     </ul>
-   <form action="{{ route('deconnexion') }}" method="POST" class="d-inline">
-    @csrf
-    <button type="submit" class="btn btn-link nav-link text-white d-inline p-0" style="vertical-align: baseline;">
-        Déconnexion
-    </button>
-</form>
 
 </div>

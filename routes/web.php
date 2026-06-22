@@ -29,17 +29,26 @@ Route::middleware('auth')->group(function () {
     
     // On protège toutes les autres actions (create, store, edit, update, destroy)
     Route::resource('terrains', TerrainController::class)
-        ->except(['index']) // On dit à Laravel de ne pas recréer la route index ici
+        ->except(['index','show']) // On dit à Laravel de ne pas recréer la route index ici
         ->parameters([
             'terrains' => 'id_terrain'
         ]);
         
 });
 
-Route::post('/rendezvous', [RendezVousController::class, 'store'])->name('rendezvous.store');
+Route::delete('/rendezvous/{id}', [RendezvousController::class, 'destroy'])->name('rendezvous.destroy')->middleware('auth');
+
+/*Route::middleware(['auth'])->group(function () {
+    // Espace Client : Voir l'historique de ses propres demandes
+    Route::get('/demandes', [RendezvousController::class, 'index'])->name('rendezvous.index');
+}); */
+
+Route::get('/infos', function () {
+    return view('accueil.infos');
+})->name('infos');
 
 require __DIR__.'/logements.php';
-require __DIR__.'/terrains.php';
+
 require __DIR__.'/clients.php';
 require __DIR__.'/agence.php';
 require __DIR__.'/auth.php';

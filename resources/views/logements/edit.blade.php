@@ -1,156 +1,96 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container py-4">
+    
+    <div class="bg-dark text-white text-center py-3 rounded mb-4 shadow" style="background-color: #111a2e !important;">
+        <h3 class="mb-0 font-weight-bold">✏️ Modifier le Logement : {{ $logement->nom_logement }}</h3>
+    </div>
 
-<div class="container mt-5">
-    <div class="card shadow mx-auto" style="max-width:700px;">
-
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">Modifier Logement</h3>
-
-            <a href="{{ route('dashboard') }}" class="text-white text-decoration-none fs-3">
-                &times;
-            </a>
-        </div>
-
-        <div class="card-body p-5">
-
-            <form action="{{ route('logements.update', $logement->id_logement ?? $logement->id) }}"
-                  method="POST"
-                  enctype="multipart/form-data">
-
-                @csrf
-                @method('PUT')
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Nom du logement :</label>
-                    <input type="text"
-                           name="nom_logement"
-                           class="form-control @error('nom_logement') is-invalid @enderror"
-                           value="{{ old('nom_logement', $logement->nom_logement) }}">
-                    @error('nom_logement')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0 rounded bg-white text-dark">
+                
+                <div class="card-header py-3 font-weight-bold border-0 text-white" style="background-color: #111a2e !important;">
+                    🔄 Mettre à jour les informations du bien
                 </div>
+                
+                <div class="card-body p-4">
+                    <form action="{{ route('logements.update', $logement->id_logement) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
 
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Description / Situation :</label>
-                    <textarea name="description_logement"
-                              class="form-control @error('description_logement') is-invalid @enderror"
-                              rows="3">{{ old('description_logement', $logement->description_logement) }}</textarea>
-                    @error('description_logement')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Superficie (m²) :</label>
-                    <input type="number"
-                           name="superficie"
-                           class="form-control @error('superficie') is-invalid @enderror"
-                           value="{{ old('superficie', $logement->superficie) }}">
-                    @error('superficie')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Modifier la photo (laisser vide pour conserver l'actuelle) :</label>
-                    <input type="file"
-                           name="image_url"
-                           class="form-control @error('image_url') is-invalid @enderror">
-                    @error('image_url')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-
-                    @if($logement->image_url)
-                        <div class="mt-2">
-                            <span class="text-muted small d-block mb-1">Photo actuelle :</span>
-                            <img src="{{ asset('images/' . $logement->image_url) }}" class="rounded shadow-sm" style="height: 80px; object-fit: cover;" alt="Aperçu">
+                        <div class="mb-3">
+                            <label for="nom_logement" class="form-label font-weight-bold text-secondary">Nom / Titre du Logement</label>
+                            <input type="text" name="nom_logement" id="nom_logement" class="form-control border-secondary @error('nom_logement') is-invalid @enderror" value="{{ old('nom_logement', $logement->nom_logement) }}" required>
+                            @error('nom_logement')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                    @endif
+
+                        <div class="mb-3">
+                            <label for="type_logement" class="form-label font-weight-bold text-secondary">Type de Logement</label>
+                            <select name="type_logement" id="type_logement" class="form-select border-secondary @error('type_logement') is-invalid @enderror" required>
+                                <option value="Appartement" {{ old('type_logement', $logement->type_logement) == 'Appartement' ? 'selected' : '' }}>Appartement</option>
+                                <option value="Studio" {{ old('type_logement', $logement->type_logement) == 'Studio' ? 'selected' : '' }}>Studio</option>
+                                <option value="Villa" {{ old('type_logement', $logement->type_logement) == 'Villa' ? 'selected' : '' }}>Villa</option>
+                                <option value="Chambre" {{ old('type_logement', $logement->type_logement) == 'Chambre' ? 'selected' : '' }}>Chambre</option>
+                            </select>
+                            @error('type_logement')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="prix_fcfa" class="form-label font-weight-bold text-secondary">Prix (F CFA)</label>
+                            <input type="number" name="prix_fcfa" id="prix_fcfa" class="form-control border-secondary @error('prix_fcfa') is-invalid @enderror" value="{{ old('prix_fcfa', $logement->prix_fcfa) }}" min="0" required>
+                            @error('prix_fcfa')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="statut" class="form-label font-weight-bold text-secondary">Statut de disponibilité</label>
+                            <select name="statut" id="statut" class="form-select border-secondary @error('statut') is-invalid @enderror" required>
+                                <option value="Disponible" {{ old('statut', $logement->statut) === 'Disponible' ? 'selected' : '' }}>🟢 Disponible</option>
+                                <option value="Vendu" {{ old('statut', $logement->statut) === 'Vendu' ? 'selected' : '' }}>🔴 Vendu</option>
+                                <option value="Occupé" {{ old('statut', $logement->statut) === 'Occupé' ? 'selected' : '' }}>🟡 Occupé</option>
+                            </select>
+                            @error('statut')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="image_url" class="form-label font-weight-bold text-secondary d-block">📷 Photo du logement</label>
+                            
+                            @if($logement->image_url)
+                                <div class="mb-3 p-2 bg-light border rounded d-inline-block shadow-sm">
+                                    <small class="text-muted d-block mb-1 font-weight-bold">Image actuelle :</small>
+                                    <img src="{{ asset('images/' . $logement->image_url) }}" alt="Aperçu actuel" style="max-height: 140px; object-fit: contain; border-radius: 4px;">
+                                </div>
+                            @else
+                                <div class="mb-3 text-warning small bg-light p-2 rounded border">
+                                    ⚠️ Aucune image associée pour le moment.
+                                </div>
+                            @endif
+
+                            <input type="file" name="image_url" id="image_url" class="form-control border-secondary @error('image_url') is-invalid @enderror" accept="image/*">
+                            <small class="text-muted d-block mt-1">Laissez vide si vous ne souhaitez pas remplacer l'image existante.</small>
+                            @error('image_url')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-2 border-top">
+                            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary px-4 font-weight-bold">Annuler</a>
+                            <button type="submit" class="btn btn-success px-5 font-weight-bold shadow-sm">💾 Sauvegarder les modifications</button>
+                        </div>
+
+                    </form>
                 </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Prix (FCFA) :</label>
-                    <input type="number"
-                           name="prix_fcfa"
-                           class="form-control @error('prix_fcfa') is-invalid @enderror"
-                           value="{{ old('prix_fcfa', $logement->prix_fcfa) }}">
-                    @error('prix_fcfa')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Nombre de pièces :</label>
-                    <input type="number"
-                           name="nombre_pieces"
-                           class="form-control @error('nombre_pieces') is-invalid @enderror"
-                           value="{{ old('nombre_pieces', $logement->nombre_pieces) }}">
-                    @error('nombre_pieces')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Nombre de chambres :</label>
-                    <input type="number"
-                           name="nombre_chambres"
-                           class="form-control @error('nombre_chambres') is-invalid @enderror"
-                           value="{{ old('nombre_chambres', $logement->nombre_chambres) }}">
-                    @error('nombre_chambres')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Nombre de salles de bain :</label>
-                    <input type="number"
-                           name="nombre_salles_de_bain"
-                           class="form-control @error('nombre_salles_de_bain') is-invalid @enderror"
-                           value="{{ old('nombre_salles_de_bain', $logement->nombre_salles_de_bain) }}">
-                    @error('nombre_salles_de_bain')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Type de logement :</label>
-                    <input type="text"
-                           name="type_logement"
-                           class="form-control @error('type_logement') is-invalid @enderror"
-                           value="{{ old('type_logement', $logement->type_logement) }}">
-                    @error('type_logement')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Meublé ?</label>
-                    <select name="meuble" class="form-control @error('meuble') is-invalid @enderror">
-                        <option value="Oui" {{ old('meuble', $logement->meuble) == 'Oui' ? 'selected' : '' }}>Oui</option>
-                        <option value="Non" {{ old('meuble', $logement->meuble) == 'Non' ? 'selected' : '' }}>Non</option>
-                    </select>
-                    @error('meuble')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="text-end mt-5">
-                    <a href="{{ route('dashboard') }}" class="btn btn-secondary me-2">
-                        Annuler
-                    </a>
-
-                    <button type="submit" class="btn btn-dark px-4">
-                        Modifier
-                    </button>
-                </div>
-
-            </form>
-
+            </div>
         </div>
     </div>
 </div>
-
 @endsection

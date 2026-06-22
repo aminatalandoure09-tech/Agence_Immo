@@ -4,173 +4,136 @@ namespace App\Http\Controllers;
 
 use App\Models\Logement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class LogementController extends Controller
 {
-    /**
-     * Afficher le catalogue de tous les logements (Vue Client)
-     */
     public function index()
     {
-        // On récupère uniquement les logements dont le statut est 'disponible'
-        $logements = Logement::where('statut', 'disponible')->get();
-
-        // On renvoie vers une vue publique (resources/views/logements/index.blade.php)
-        return view('logements.index', compact('logements'));
+        $listeLogements = Logement::where('statut','Disponible')->orderBy('id_logement', 'desc')->get();
+        return view('logements.index', ['listeLogements' => $listeLogements]);
     }
 
-    /**
-     * Afficher le formulaire d'ajout de logement
-     */
     public function create()
     {
-        return view('logements.create'); 
+        // Sécurité Admin
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect('/')->with('error', "Accès non autorisé.");
+        }
+        return view('logements.create');
     }
 
-    /**
-     * Enregistrer un nouveau logement dans la base de données
-     */
     public function store(Request $request)
     {
-        // 1. Validation stricte des données du formulaire
-        $request->validate([
-            'nom_logement'          => 'required|string|max:255',
-            'description_logement'  => 'nullable|string',
-            'superficie'            => 'required|integer|min:1',
-            'image_url'             => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'prix_fcfa'             => 'required|numeric|min:0',
-            'nombre_pieces'         => 'required|integer|min:1',
-            'nombre_chambres'       => 'required|integer|min:0',
-            'nombre_salles_de_bain' => 'required|integer|min:0',
-            'type_logement'         => 'required|string|max:100',
-            'meuble'                => 'required|in:Oui,Non',
-        ]);
-
-        // 2. Gestion du fichier image -> déplacement direct vers public/images
-        $filename = null;
-        if ($request->hasFile('image_url')) {
-            $file = $request->file('image_url');
-            // Génération d'un nom unique basé sur le timestamp
-            $filename = time() . '_' . $file->getClientOriginalName();
-            // Déplacement physique vers le dossier public/images/
-            $file->move(public_path('images'), $filename);
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect('/')->with('error', "Accès non autorisé.");
         }
 
-        // 3. Insertion dans la base de données via le modèle
+        $request->validate([
+            'nom_logement'          => 'required|string|max:255',
+            'type_logement'         => 'required|string|max:255',
+            'description_logement'  => 'nullable|string',
+            'nombre_chambres'       => 'required|integer|min:0',
+            'nombre_salles_de_bain' => 'required|integer|min:0',
+            'garage'                => 'required|string|max:10',
+            'meuble'                => 'required|string|max:10',
+            'superficie'            => 'required|numeric|min:1',
+            'prix_fcfa'             => 'required|numeric|min:0',
+            'statut'                => 'required|string|max:50',
+            'image_url'             => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ]);
+
+        $nomFichier = null;
+        if ($request->hasFile('image_url')) {
+            $fichier = $request->file('image_url');
+            $extension = strtolower($fichier->getClientOriginalExtension());
+            $nomFichier = time() . '_logement_' . uniqid() . '.' . $extension;
+            $fichier->move(public_path('images'), $nomFichier);
+        }
+
         Logement::create([
-            'nom_logement'          => $request->input('nom_logement'),
-            'description_logement'  => $request->input('description_logement'),
-            'superficie'            => $request->input('superficie'),
-            'image_url'             => $filename,
-            'prix_fcfa'             => $request->input('prix_fcfa'),
-            'nombre_pieces'         => $request->input('nombre_pieces'),
-            'nombre_chambres'       => $request->input('nombre_chambres'),
-            'nombre_salles_de_bain' => $request->input('nombre_salles_de_bain'),
-            'type_logement'         => $request->input('type_logement'),
-            'meuble'                => $request->input('meuble'),
-             // On stocke uniquement le nom du fichier
-            'statut'                => 'disponible', // Par défaut à la création
+            'nom_logement'          => $request->nom_logement,
+            'type_logement'         => $request->type_logement,
+            'description_logement'  => $request->description_logement,
+            'nombre_chambres'       => $request->nombre_chambres,
+            'nombre_salles_de_bain' => $request->nombre_salles_de_bain,
+            'garage'                => $request->garage,
+            'meuble'                => $request->meuble,
+            'superficie'            => $request->superficie,
+            'prix_fcfa'             => $request->prix_fcfa,
+            'statut'                => $request->statut, // Ex: Disponible / Masqué
+            'image_url'             => $nomFichier,
         ]);
 
-        // 4. Retour sur le dashboard avec le message de succès
-        return redirect()->route('dashboard')->with('success', 'Logement ajouté avec succès.');
+        // Redirection explicite vers le Dashboard Admin
+        return redirect('/dashboard')->with('success', 'Le logement a été ajouté avec succès !');
     }
 
-    /**
-     * Afficher le formulaire de modification d'un logement
-     */
-    public function edit($id)
+    public function show($id_logement)
     {
-        // Recherche le logement par sa clé primaire exacte
-        $logement = Logement::findOrFail($id);
-
-        // Renvoie vers votre vue d'édition (resources/views/logements/edit.blade.php)
-        return view('logements.edit', compact('logement'));
-    }
-
-    /**
-     * Mettre à jour un logement existant
-     */
-    public function update(Request $request, $id)
-    {
-        $logement = Logement::findOrFail($id);
-
-        // 1. Validation des champs modifiés
-        $request->validate([
-            'nom_logement'          => 'required|string|max:255',
-            'description_logement'  => 'nullable|string',
-            'superficie'            => 'required|integer|min:1',
-            'image_url'             => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'prix_fcfa'             => 'required|numeric|min:0',
-            'nombre_pieces'         => 'required|integer|min:1',
-            'nombre_chambres'       => 'required|integer|min:0',
-            'nombre_salles_de_bain' => 'required|integer|min:0',
-            'type_logement'         => 'required|string|max:100',
-            'meuble'                => 'required|in:Oui,Non',
-            
-        ]);
-
-        // 2. Gestion de l'image si une nouvelle image est soumise
-        $filename = $logement->image_url; // On garde l'ancienne par défaut
-        
-        if ($request->hasFile('image_url')) {
-            $file = $request->file('image_url');
-            
-            // Optionnel : On supprime l'ancienne image physique dans public/images si elle existe
-            if ($logement->image_url && file_exists(public_path('images/' . $logement->image_url))) {
-                @unlink(public_path('images/' . $logement->image_url));
-            }
-            
-            // Stockage de la nouvelle image
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-        }
-
-        // 3. Sauvegarde des données mises à jour
-        $logement->update([
-            'nom_logement'          => $request->input('nom_logement'),
-            'description_logement'  => $request->input('description_logement'),
-            'superficie'            => $request->input('superficie'),
-            'image_url'             => $filename,
-            'prix_fcfa'             => $request->input('prix_fcfa'),
-            'nombre_pieces'         => $request->input('nombre_pieces'),
-            'nombre_chambres'       => $request->input('nombre_chambres'),
-            'nombre_salles_de_bain' => $request->input('nombre_salles_de_bain'),
-            'type_logement'         => $request->input('type_logement'),
-            'meuble'                => $request->input('meuble'),
-            
-        ]);
-
-        return redirect()->route('dashboard')->with('success', 'Logement mis à jour avec succès.');
-    }
-
-    /**
-     * Afficher les détails d'un logement spécifique (Vue Client)
-     */
-    public function show($id)
-    {
-        // Récupère le logement ou génère une erreur 404 s'il n'existe pas
-        $logement = Logement::findOrFail($id);
-
-        // Renvoie vers le fichier resources/views/logements/show.blade.php
+        $logement = Logement::where('id_logement', $id_logement)->firstOrFail();
         return view('logements.show', compact('logement'));
     }
 
-    /**
-     * Supprimer un logement de la base de données
-     */
-    public function destroy($id)
+    public function edit($id_logement)
     {
-        $logement = Logement::findOrFail($id);
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect('/')->with('error', "Accès non autorisé.");
+        }
+        $logement = Logement::where('id_logement', $id_logement)->firstOrFail();
+        return view('logements.edit', compact('logement'));
+    }
 
-        // Suppression de l'image physique dans public/images avant de supprimer la ligne en BDD
+    public function update(Request $request, $id_logement)
+{
+    $request->validate([
+        'nom_logement'  => 'required|string|max:255',
+        'type_logement' => 'required|string',
+        'prix_fcfa'     => 'required|numeric|min:0',
+        'statut'        => 'required|string',
+        'image_url'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+    ]);
+
+    $logement = Logement::where('id_logement', $id_logement)->firstOrFail();
+
+    $logement->nom_logement  = $request->nom_logement;
+    $logement->type_logement = $request->type_logement;
+    $logement->prix_fcfa     = $request->prix_fcfa;
+    $logement->statut        = $request->statut; // Sauvegarde bien le nouveau statut sélectionné
+
+    if ($request->hasFile('image_url')) {
+        // Supprime l'ancienne image du disque
         if ($logement->image_url && file_exists(public_path('images/' . $logement->image_url))) {
             @unlink(public_path('images/' . $logement->image_url));
         }
 
-        // Suppression de l'enregistrement
-        $logement->delete();
+        // Téléversement propre
+        $image = $request->file('image_url');
+        $imageName = time() . '_logement.' . $image->getClientOriginalExtension();
+        $image->move(public_path('images'), $imageName);
+        
+        $logement->image_url = $imageName;
+    }
 
-        return redirect()->route('dashboard')->with('success', 'Logement supprimé définitivement.');
+    $logement->save();
+
+    return redirect()->route('dashboard')->with('success', 'Le logement a été mis à jour avec succès !');
+}
+
+    public function destroy($id_logement)
+    {
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect('/')->with('error', "Accès non autorisé.");
+        }
+
+        $logement = Logement::where('id_logement', $id_logement)->firstOrFail();
+
+        if ($logement->image_url && File::exists(public_path('images/' . $logement->image_url))) {
+            File::delete(public_path('images/' . $logement->image_url));
+        }
+
+        $logement->delete();
+        return redirect('/dashboard')->with('success', 'Le logement a été supprimé avec succès !');
     }
 }
