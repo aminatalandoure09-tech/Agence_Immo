@@ -64,7 +64,7 @@
                 </a>
                 
                  @auth
-        <a href="{{ route('rendezvous.create', ['terrain_id' => $terrain->id_terrain]) }}" class="btn btn-success font-weight-bold px-4 py-2 w-100 rounded shadow-sm" style="background-color: #22c55e !important; border: none; font-size: 1rem;">
+        <a href="{{ route('rendezvous.create', ['logement_id' => $logement->id_logement]) }}" class="btn btn-success font-weight-bold px-4 py-2 w-100 rounded shadow-sm" style="background-color: #22c55e !important; border: none; font-size: 1rem;">
             Prendre rendez-vous
         </a>
     @endauth
